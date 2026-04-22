@@ -1,15 +1,19 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Carmova Rider</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <style>
     :root{
-      --bg:#0a0f1f;
-      --bg-2:#0f172d;
-      --card:rgba(20,28,52,.82);
-      --card-2:rgba(17,24,39,.86);
+      --bg:#070b16;
+      --bg-2:#0c1224;
+      --card:rgba(20,28,52,.84);
+      --card-2:rgba(14,20,36,.92);
       --line:rgba(255,255,255,.08);
       --text:#f8fafc;
       --muted:#94a3b8;
@@ -17,7 +21,8 @@
       --blue-2:#1d4ed8;
       --green:#16a34a;
       --amber:#f59e0b;
-      --shadow:0 20px 60px rgba(0,0,0,.45);
+      --danger:#ef4444;
+      --shadow:0 24px 80px rgba(0,0,0,.45);
       --radius:22px;
     }
 
@@ -27,16 +32,16 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(29,78,216,.16), transparent 24%),
-        linear-gradient(180deg, var(--bg), #070b16 100%);
+        radial-gradient(circle at top left, rgba(59,130,246,.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(29,78,216,.14), transparent 24%),
+        linear-gradient(180deg, var(--bg), #050811 100%);
       min-height:100vh;
     }
 
     .shell{
-      max-width:1180px;
+      max-width:1220px;
       margin:0 auto;
-      padding:28px 18px 60px;
+      padding:28px 18px 48px;
     }
 
     .topbar{
@@ -111,17 +116,17 @@
 
     .hero{
       display:grid;
-      grid-template-columns:1.1fr .9fr;
+      grid-template-columns:1.08fr .92fr;
       gap:18px;
       margin-bottom:18px;
     }
 
     .glass{
-      background:linear-gradient(180deg, rgba(23,33,62,.86), rgba(13,20,39,.88));
+      background:linear-gradient(180deg, rgba(23,33,62,.86), rgba(13,20,39,.9));
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(18px);
       overflow:hidden;
       position:relative;
     }
@@ -130,13 +135,12 @@
       content:"";
       position:absolute;
       inset:0;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), transparent 35%);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), transparent 35%);
       pointer-events:none;
     }
 
     .hero-main{
       padding:28px;
-      position:relative;
     }
 
     .eyebrow{
@@ -159,7 +163,7 @@
       letter-spacing:-.04em;
       margin:0 0 12px;
       font-weight:900;
-      max-width:600px;
+      max-width:620px;
     }
 
     .sub{
@@ -197,87 +201,19 @@
     }
 
     .hero-side{
-      padding:22px;
+      padding:18px;
       display:flex;
       flex-direction:column;
-      justify-content:space-between;
-      gap:16px;
+      gap:14px;
     }
 
-    .map-card{
+    #map{
+      width:100%;
+      height:320px;
       border-radius:20px;
-      min-height:250px;
-      position:relative;
-      overflow:hidden;
-      background:
-        radial-gradient(circle at 18% 26%, rgba(59,130,246,.45), transparent 12%),
-        radial-gradient(circle at 78% 70%, rgba(34,197,94,.22), transparent 16%),
-        linear-gradient(135deg, #132142, #0d1730);
       border:1px solid var(--line);
-    }
-
-    .road{
-      position:absolute;
-      background:rgba(255,255,255,.08);
-      border-radius:999px;
-    }
-
-    .road.r1{width:180%;height:12px;top:44%;left:-30%;transform:rotate(20deg)}
-    .road.r2{width:140%;height:10px;top:16%;left:-10%;transform:rotate(-12deg)}
-    .road.r3{width:110%;height:10px;top:68%;left:-5%;transform:rotate(-8deg)}
-    .road.r4{width:12px;height:140%;top:-10%;left:54%}
-
-    .pin{
-      position:absolute;
-      width:18px;
-      height:18px;
-      border-radius:999px 999px 999px 0;
-      transform:rotate(-45deg);
-      box-shadow:0 10px 24px rgba(0,0,0,.35);
-    }
-
-    .pin:after{
-      content:"";
-      position:absolute;
-      width:8px;
-      height:8px;
-      background:white;
-      border-radius:50%;
-      top:5px;
-      left:5px;
-    }
-
-    .pin.pickup{background:#3b82f6;top:28%;left:26%}
-    .pin.dropoff{background:#16a34a;top:58%;left:68%}
-
-    .route-line{
-      position:absolute;
-      top:41%;
-      left:30%;
-      width:38%;
-      height:3px;
-      background:linear-gradient(90deg, #60a5fa, #22c55e);
-      transform:rotate(18deg);
-      border-radius:999px;
-      box-shadow:0 0 22px rgba(96,165,250,.45);
-    }
-
-    .route-pulse{
-      position:absolute;
-      top:39.6%;
-      left:54%;
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:white;
-      box-shadow:0 0 0 0 rgba(255,255,255,.7);
-      animation:pulse 1.8s infinite;
-    }
-
-    @keyframes pulse{
-      0%{box-shadow:0 0 0 0 rgba(255,255,255,.7)}
-      70%{box-shadow:0 0 0 18px rgba(255,255,255,0)}
-      100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}
+      overflow:hidden;
+      background:#10192f;
     }
 
     .route-meta{
@@ -295,7 +231,7 @@
 
     .mini strong{
       display:block;
-      font-size:16px;
+      font-size:15px;
       margin-bottom:4px;
     }
 
@@ -369,7 +305,7 @@
 
     .btn-row{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr 1fr 1fr;
       gap:12px;
       margin-top:18px;
     }
@@ -384,13 +320,8 @@
       transition:transform .15s ease, box-shadow .18s ease, opacity .18s ease;
     }
 
-    button:hover{
-      transform:translateY(-1px);
-    }
-
-    button:active{
-      transform:translateY(1px) scale(.99);
-    }
+    button:hover{ transform:translateY(-1px); }
+    button:active{ transform:translateY(1px) scale(.99); }
 
     .btn-primary{
       color:white;
@@ -401,6 +332,12 @@
     .btn-secondary{
       color:white;
       background:linear-gradient(90deg, #111827, #1f2937);
+      border:1px solid var(--line);
+    }
+
+    .btn-ghost{
+      color:#dbeafe;
+      background:rgba(255,255,255,.04);
       border:1px solid var(--line);
     }
 
@@ -419,10 +356,10 @@
     }
 
     .fare-main{
-      font-size:34px;
+      font-size:38px;
       font-weight:900;
       letter-spacing:-.03em;
-      margin-bottom:10px;
+      margin-bottom:8px;
     }
 
     .fare-sub{
@@ -445,13 +382,8 @@
       padding-top:0;
     }
 
-    .fare-row span{
-      color:#cbd5e1;
-    }
-
-    .fare-row strong{
-      font-size:15px;
-    }
+    .fare-row span{ color:#cbd5e1; }
+    .fare-row strong{ font-size:15px; }
 
     .trip-title{
       font-size:22px;
@@ -489,6 +421,10 @@
 
     .status.assigned{
       background:linear-gradient(90deg, #16a34a, #15803d);
+    }
+
+    .status.arriving{
+      background:linear-gradient(90deg, #3b82f6, #1d4ed8);
     }
 
     @keyframes glow{
@@ -581,6 +517,33 @@
       font-size:14px;
     }
 
+    .helper{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .error{
+      color:#fecaca;
+      background:rgba(239,68,68,.12);
+      border:1px solid rgba(239,68,68,.2);
+      padding:12px 14px;
+      border-radius:14px;
+      margin-top:12px;
+      font-size:14px;
+    }
+
+    .leaflet-container{
+      background:#0f172d;
+    }
+
+    .leaflet-popup-content-wrapper,
+    .leaflet-popup-tip{
+      background:#111827;
+      color:#fff;
+    }
+
     @media (max-width: 940px){
       .hero,.grid{grid-template-columns:1fr}
     }
@@ -591,10 +554,9 @@
       .input-grid,.btn-row,.trip-grid,.route-meta{grid-template-columns:1fr}
       .topbar{align-items:flex-start;flex-direction:column}
       .hero-main,.hero-side,.panel{padding:18px}
+      #map{height:280px}
     }
   </style>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
   <div class="shell">
@@ -607,7 +569,7 @@
         </div>
       </div>
       <div class="top-actions">
-        <div class="chip">Live API: api.carmova.uk</div>
+        <div class="chip" id="apiBadge">Live API</div>
         <div class="chip">Platform fee: 10%</div>
       </div>
     </div>
@@ -618,12 +580,12 @@
         <h2 class="headline">Book a ride that feels fast, smooth, and premium.</h2>
         <p class="sub">
           Carmova gives riders a cleaner, smarter booking flow with instant fare clarity,
-          beautiful status updates, and a premium dark experience built to feel launch-ready.
+          beautiful live mapping, route intelligence, and premium trip updates built to feel launch-ready.
         </p>
 
         <div class="hero-stats">
           <div class="hero-stat">
-            <strong>3 min</strong>
+            <strong id="heroEta">—</strong>
             <span>Typical ETA</span>
           </div>
           <div class="hero-stat">
@@ -631,23 +593,23 @@
             <span>Platform fee</span>
           </div>
           <div class="hero-stat">
-            <strong>24/7</strong>
-            <span>Rider support</span>
+            <strong id="heroMiles">—</strong>
+            <span>Live route miles</span>
           </div>
         </div>
       </div>
 
       <div class="glass hero-side">
-        <div id="rideMap" class="map-card"></div>
+        <div id="map"></div>
 
         <div class="route-meta">
           <div class="mini">
             <strong>Pickup</strong>
-            <span>Liverpool ONE</span>
+            <span id="miniPickup">Liverpool ONE</span>
           </div>
           <div class="mini">
             <strong>Dropoff</strong>
-            <span>John Lennon Airport</span>
+            <span id="miniDropoff">John Lennon Airport</span>
           </div>
           <div class="mini">
             <strong>Category</strong>
@@ -686,10 +648,17 @@
         <div class="btn-row">
           <button id="quoteBtn" class="btn-primary">Get Fare Estimate</button>
           <button id="bookBtn" class="btn-secondary">Request Ride</button>
+          <button id="locateBtn" class="btn-ghost">Use My Location</button>
         </div>
+
+        <div id="formError"></div>
 
         <div class="result-card" id="quoteBox">
           <div class="empty">No fare calculated yet.</div>
+        </div>
+
+        <div class="helper">
+          Route distance and duration can auto-update from the live road route on the map.
         </div>
       </div>
 
@@ -709,35 +678,33 @@
   </div>
 
   <script>
-    const API = 'https://api.carmova.uk';
+    const API =
+      location.hostname === 'localhost' ||
+      location.hostname === '127.0.0.1'
+        ? 'http://localhost:4000'
+        : 'https://api.carmova.uk';
+
+    document.getElementById('apiBadge').textContent = `API: ${API.replace(/^https?:\\/\\//, '')}`;
+
     let latestTrip = null;
-
     let map;
+    let pickupMarker;
+    let dropoffMarker;
+    let driverMarker;
+    let routeLine;
+    let driverAnimation = null;
+    let currentRoute = null;
 
-function initMap() {
-  map = L.map('rideMap').setView([53.4084, -2.9916], 12);
+    function showError(message) {
+      document.getElementById('formError').innerHTML = `<div class="error">${message}</div>`;
+    }
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  const pickup = L.marker([53.4046, -2.9919]).addTo(map).bindPopup('Pickup');
-  const dropoff = L.marker([53.3336, -2.8497]).addTo(map).bindPopup('Dropoff');
-
-  const route = L.polyline([
-    [53.4046, -2.9919],
-    [53.3336, -2.8497]
-  ], {
-    color: '#3b82f6',
-    weight: 5
-  }).addTo(map);
-
-  map.fitBounds(route.getBounds(), { padding: [30, 30] });
-}
-
+    function clearError() {
+      document.getElementById('formError').innerHTML = '';
+    }
 
     function formatStatus(status) {
-      return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      return status.replace(/_/g, ' ').replace(/\\b\\w/g, c => c.toUpperCase());
     }
 
     function getDriverProfile(driverId) {
@@ -750,14 +717,79 @@ function initMap() {
       return { name: 'Nearby Driver', rating: '4.8 ★', car: 'Executive Sedan', plate: 'CARM-01', initials: 'CD', eta: '3 min' };
     }
 
+    function createDriverIcon(label = '🚗') {
+      return L.divIcon({
+        className: 'driver-div-icon',
+        html: `
+          <div style="
+            width:36px;
+            height:36px;
+            border-radius:12px;
+            background:linear-gradient(135deg,#16a34a,#15803d);
+            display:grid;
+            place-items:center;
+            color:white;
+            box-shadow:0 8px 20px rgba(0,0,0,.35);
+            border:2px solid rgba(255,255,255,.85);
+            font-size:16px;
+          ">${label}</div>
+        `,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
+      });
+    }
+
+    function initMap() {
+      map = L.map('map', { zoomControl: true }).setView([53.4084, -2.9916], 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+    }
+
+    async function geocodePlace(place) {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(place)}`
+      );
+      const data = await res.json();
+
+      if (!data.length) {
+        throw new Error(`Location not found: ${place}`);
+      }
+
+      return {
+        lat: Number(data[0].lat),
+        lon: Number(data[0].lon),
+        name: data[0].display_name
+      };
+    }
+
+    async function reverseGeocode(lat, lon) {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+      );
+      const data = await res.json();
+      return data.display_name || `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+    }
+
+    function updateRouteMeta(pickupText, dropoffText) {
+      document.getElementById('miniPickup').textContent = pickupText;
+      document.getElementById('miniDropoff').textContent = dropoffText;
+    }
+
+    function updateHeroStats(distanceMiles, durationMinutes) {
+      document.getElementById('heroMiles').textContent = `${distanceMiles.toFixed(1)} mi`;
+      document.getElementById('heroEta').textContent = `${Math.round(durationMinutes)} min`;
+    }
+
     function renderFareCard(data) {
       document.getElementById('quoteBox').innerHTML =
         `<div>
-          <div class="fare-main">£${data.subtotal}</div>
-          <div class="fare-sub">Estimated total for this route</div>
-          <div class="fare-row"><span>Driver earns</span><strong>£${data.driverNet}</strong></div>
-          <div class="fare-row"><span>Platform fee</span><strong>£${data.platformFee}</strong></div>
-          <div class="fare-row"><span>Commission</span><strong>${data.commissionRate * 100}%</strong></div>
+          <div class="fare-main">£${Number(data.subtotal).toFixed(2)}</div>
+          <div class="fare-sub">Estimated total for this live road route</div>
+          <div class="fare-row"><span>Driver earns</span><strong>£${Number(data.driverNet).toFixed(2)}</strong></div>
+          <div class="fare-row"><span>Platform fee</span><strong>£${Number(data.platformFee).toFixed(2)}</strong></div>
+          <div class="fare-row"><span>Commission</span><strong>${Math.round(Number(data.commissionRate) * 100)}%</strong></div>
         </div>`;
     }
 
@@ -778,7 +810,7 @@ function initMap() {
             </div>
             <div class="trip-item">
               <label>Fare</label>
-              <div>£${trip.quote.subtotal}</div>
+              <div>£${Number(trip.quote.subtotal).toFixed(2)}</div>
             </div>
             <div class="trip-item">
               <label>Status</label>
@@ -809,7 +841,7 @@ function initMap() {
             </div>
             <div class="trip-item">
               <label>Fare</label>
-              <div>£${trip.quote.subtotal}</div>
+              <div>£${Number(trip.quote.subtotal).toFixed(2)}</div>
             </div>
             <div class="trip-item">
               <label>ETA</label>
@@ -833,15 +865,138 @@ function initMap() {
         </div>`;
     }
 
+    function stopDriverAnimation() {
+      if (driverAnimation) {
+        clearInterval(driverAnimation);
+        driverAnimation = null;
+      }
+    }
+
+    function animateDriverToPickup(pickupCoords) {
+      stopDriverAnimation();
+
+      const startLat = pickupCoords.lat + 0.035;
+      const startLon = pickupCoords.lon - 0.05;
+
+      if (driverMarker) {
+        map.removeLayer(driverMarker);
+      }
+
+      driverMarker = L.marker([startLat, startLon], {
+        icon: createDriverIcon()
+      }).addTo(map).bindPopup('Driver approaching');
+
+      let step = 0;
+      const totalSteps = 35;
+
+      driverAnimation = setInterval(() => {
+        step++;
+
+        const lat = startLat + ((pickupCoords.lat - startLat) * step / totalSteps);
+        const lon = startLon + ((pickupCoords.lon - startLon) * step / totalSteps);
+
+        driverMarker.setLatLng([lat, lon]);
+
+        if (step >= totalSteps) {
+          stopDriverAnimation();
+          driverMarker.bindPopup('Driver has arrived nearby').openPopup();
+        }
+      }, 900);
+    }
+
+    async function drawDynamicRoute() {
+      clearError();
+
+      const pickupText = document.getElementById('pickup').value.trim();
+      const destinationText = document.getElementById('destination').value.trim();
+
+      if (!pickupText || !destinationText) {
+        throw new Error('Pickup and destination are required.');
+      }
+
+      const pickupCoords = await geocodePlace(pickupText);
+      const dropoffCoords = await geocodePlace(destinationText);
+
+      updateRouteMeta(pickupText, destinationText);
+
+      if (pickupMarker) map.removeLayer(pickupMarker);
+      if (dropoffMarker) map.removeLayer(dropoffMarker);
+      if (routeLine) map.removeLayer(routeLine);
+
+      pickupMarker = L.marker([pickupCoords.lat, pickupCoords.lon]).addTo(map).bindPopup('Pickup');
+      dropoffMarker = L.marker([dropoffCoords.lat, dropoffCoords.lon]).addTo(map).bindPopup('Dropoff');
+
+      const routeRes = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${pickupCoords.lon},${pickupCoords.lat};${dropoffCoords.lon},${dropoffCoords.lat}?overview=full&geometries=geojson`
+      );
+
+      const routeData = await routeRes.json();
+
+      if (!routeData.routes || !routeData.routes.length) {
+        throw new Error('Could not calculate route.');
+      }
+
+      const route = routeData.routes[0];
+      currentRoute = route;
+
+      const coords = route.geometry.coordinates.map(([lon, lat]) => [lat, lon]);
+
+      routeLine = L.polyline(coords, {
+        color: '#3b82f6',
+        weight: 6,
+        opacity: 0.95
+      }).addTo(map);
+
+      map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
+
+      const miles = route.distance / 1609.344;
+      const minutes = route.duration / 60;
+
+      document.getElementById('distance').value = miles.toFixed(1);
+      document.getElementById('duration').value = Math.max(1, Math.round(minutes));
+
+      updateHeroStats(miles, minutes);
+
+      return { pickupCoords, dropoffCoords, miles, minutes };
+    }
+
+    async function useMyLocation() {
+      clearError();
+
+      if (!navigator.geolocation) {
+        showError('Geolocation is not supported on this device.');
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async position => {
+          try {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const label = await reverseGeocode(lat, lon);
+            document.getElementById('pickup').value = label;
+            await drawDynamicRoute();
+          } catch (err) {
+            showError('Could not use your location.');
+          }
+        },
+        () => {
+          showError('Location permission was denied.');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+
     async function getQuote() {
       try {
-        const distance = document.getElementById('distance').value;
-        const duration = document.getElementById('duration').value;
+        const routeInfo = await drawDynamicRoute();
 
-        const res = await fetch(`${API}/pricing/quote?distance=${distance}&duration=${duration}`);
+        const res = await fetch(`${API}/pricing/quote?distance=${routeInfo.miles.toFixed(1)}&duration=${Math.round(routeInfo.minutes)}`);
         const data = await res.json();
+
         renderFareCard(data);
       } catch (err) {
+        showError(err.message || 'Could not load fare estimate.');
         document.getElementById('quoteBox').innerHTML =
           `<div class="empty">Could not load fare estimate. Please try again.</div>`;
       }
@@ -849,11 +1004,13 @@ function initMap() {
 
     async function requestRide() {
       try {
+        const routeInfo = await drawDynamicRoute();
+
         const payload = {
           pickup: document.getElementById('pickup').value,
           destination: document.getElementById('destination').value,
-          distanceMiles: Number(document.getElementById('distance').value),
-          durationMinutes: Number(document.getElementById('duration').value)
+          distanceMiles: Number(routeInfo.miles.toFixed(1)),
+          durationMinutes: Math.max(1, Math.round(routeInfo.minutes))
         };
 
         const res = await fetch(`${API}/trips/request`, {
@@ -869,15 +1026,23 @@ function initMap() {
         setTimeout(() => {
           renderAssignedTrip(latestTrip);
         }, 1800);
+
+        if (routeInfo.pickupCoords) {
+          animateDriverToPickup(routeInfo.pickupCoords);
+        }
       } catch (err) {
+        showError(err.message || 'Could not request ride.');
         document.getElementById('tripBox').innerHTML =
           `<div class="empty">Could not request ride. Please try again.</div>`;
       }
     }
 
     document.getElementById('quoteBtn').onclick = getQuote;
-document.getElementById('bookBtn').onclick = requestRide;
-initMap();
-</script>
+    document.getElementById('bookBtn').onclick = requestRide;
+    document.getElementById('locateBtn').onclick = useMyLocation;
+
+    initMap();
+    drawDynamicRoute().catch(() => {});
+  </script>
 </body>
 </html>
