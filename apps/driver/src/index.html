@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rydio Driver</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #101010; color: #fff; }
+    .wrap { max-width: 780px; margin: 0 auto; padding: 24px; }
+    .card { background: #1b1b1b; border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+    button { padding: 12px 16px; border-radius: 10px; border: 0; cursor: pointer; font-weight: 700; margin-right: 8px; }
+    .on { background: #1ea672; color: white; }
+    .off { background: #555; color: white; }
+    .primary { background: #f0b400; }
+    pre { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Rydio Driver</h1>
+    <div class="card">
+      <h3>Driver profile</h3>
+      <button class="on" id="onlineBtn">Go Online</button>
+      <button class="off" id="offlineBtn">Go Offline</button>
+      <pre id="driverBox"></pre>
+    </div>
+    <div class="card">
+      <h3>Available trips</h3>
+      <button class="primary" id="refreshBtn">Refresh Trips</button>
+      <pre id="tripsBox">No trips loaded yet.</pre>
+    </div>
+  </div>
+<script>
+const API = 'http://localhost:4000';
+const DRIVER_ID = 'd1';
+
+async function loadDriver() {
+  const res = await fetch(`${API}/drivers`);
+  const data = await res.json();
+  const driver = data.find(d => d.id === DRIVER_ID);
+  document.getElementById('driverBox').textContent = JSON.stringify(driver, null, 2);
+}
+
+async function updateStatus(online) {
+  await fetch(`${API}/drivers/${DRIVER_ID}/status`, {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ online })
+  });
+  loadDriver();
+}
+
+async function loadTrips() {
+  const res = await fetch(`${API}/trips`);
+  const data = await res.json();
+  document.getElementById('tripsBox').innerHTML = data.map(t =>
+    `${JSON.stringify(t, null, 2)}\n<button onclick="acceptTrip('${t.id}')">Accept</button> <button onclick="completeTrip('${t.id}')">Complete</button>`
+  ).join('\n\n');
+}
+
+async function acceptTrip(id) {
+  await fetch(`${API}/trips/${id}/accept`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ driverId: DRIVER_ID })
+  });
+  loadTrips();
+  loadDriver();
+}
+
+async function completeTrip(id) {
+  await fetch(`${API}/trips/${id}/complete`, { method: 'POST' });
+  loadTrips();
+  loadDriver();
+}
+
+window.acceptTrip = acceptTrip;
+window.completeTrip = completeTrip;
+document.getElementById('onlineBtn').onclick = () => updateStatus(true);
+document.getElementById('offlineBtn').onclick = () => updateStatus(false);
+document.getElementById('refreshBtn').onclick = loadTrips;
+loadDriver();
+</script>
+</body>
+</html>

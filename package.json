@@ -1,0 +1,14 @@
+{
+  "name": "rydio-starter",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w apps/api\" \"npm run dev -w apps/rider\" \"npm run dev -w apps/driver\" \"npm run dev -w apps/admin\"",
+    "start": "npm run start -w apps/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
