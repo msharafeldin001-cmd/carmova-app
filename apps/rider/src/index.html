@@ -64,11 +64,7 @@ async function getQuote() {
     <small>Driver earns: £${data.driverNet}</small><br/>
     <small>Platform fee: £${data.platformFee}</small><br/>
     <small>Commission: ${data.commissionRate * 100}%</small>
-  </div>`;
-  `Fare: £${data.subtotal}\n` +
-  `Driver earns: £${data.driverNet}\n` +
-  `Platform fee: £${data.platformFee}\n` +
-  `Commission: ${data.commissionRate * 100}%`; 
+  </div>`; 
 }
 
 async function requestRide() {
@@ -82,7 +78,15 @@ async function requestRide() {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
   });
   latestTrip = await res.json();
-  document.getElementById('tripBox').textContent = JSON.stringify(latestTrip, null, 2);
+  document.getElementById('tripBox').innerHTML =
+  `<div style="line-height:1.7;">
+    <div style="font-size:18px;font-weight:700;">Ride requested</div>
+    <div>From: ${latestTrip.pickup}</div>
+    <div>To: ${latestTrip.destination}</div>
+    <div>Status: ${latestTrip.status}</div>
+    <div>Driver: ${latestTrip.driverId || 'Searching...'}</div>
+    <div>Fare: £${latestTrip.quote.subtotal}</div>
+  </div>`;
 }
 
 document.getElementById('quoteBtn').onclick = getQuote;
