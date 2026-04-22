@@ -1,10 +1,10 @@
-# Rydio Starter Monorepo
+# Carmova 
 
-A full-stack starter for a ride-hailing platform inspired by the core flow of apps like Uber.
+Carmova is a ride-hailing platform for booking, driver management, and trip tracking.
 
 ## Brand
-- Product: **Rydio**
-- Working domain: **getrydio.com**
+- Product: **Carmova**
+- Working domain: **https://carmova.uk**
 - Platform commission: **10%**
 
 ## Apps
@@ -18,13 +18,13 @@ A full-stack starter for a ride-hailing platform inspired by the core flow of ap
 - Driver flow: online status, incoming trips, accept trip, earnings view
 - Admin flow: trips, drivers, pricing, platform commission
 - Environment placeholders for domain setup and deployment
-- Nginx config example for `getrydio.com`, `api.getrydio.com`, and `admin.getrydio.com`
+- Nginx config example for `carmova.uk`, `api.carmova.uk`, and `admin.carmova.uk`
 
 ## Limits
-This package does **not** register the domain, deploy the apps, or process real card payments automatically. You will still need to:
-1. Register `getrydio.com` at your chosen registrar.
+This package does not register the domain, deploy the apps, or process real card payments automatically. You will still need to:
+1. Register `carmova.uk` at your chosen registrar.
 2. Point DNS records to your server or hosting providers.
-3. Add a real maps provider, auth provider, SMS/email provider, and payment processor.
+3. Add a real maps provider, and payment processor.
 
 ## Quick start
 ```bash
@@ -33,13 +33,13 @@ npm run dev
 ```
 
 ## Domain plan
-- `getrydio.com` -> rider app
-- `driver.getrydio.com` -> driver app
-- `admin.getrydio.com` -> admin dashboard
-- `api.getrydio.com` -> backend API
+- `carmova.uk` -> rider app
+- `driver.carmova.uk` -> driver app
+- `admin.carmova.uk` -> admin dashboard
+- `api.carmova.uk` -> backend API
 
 ## Commission model
-The platform fee is set to `10%` in `.env.example` and in the API pricing service.
+The platform fee is set to `10%` in the API pricing service.
 
 ## Suggested next steps
 1. Register the domain.
