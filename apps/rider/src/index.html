@@ -83,7 +83,7 @@ async function requestRide() {
     <div style="font-size:18px;font-weight:700;">Ride requested</div>
     <div>From: ${latestTrip.pickup}</div>
     <div>To: ${latestTrip.destination}</div>
-    <div>Status: ${latestTrip.status}</div>
+    <div>Status: ${latestTrip.status.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}</div>
     <div>Driver: ${latestTrip.driverId || 'Searching...'}</div>
     <div>Fare: £${latestTrip.quote.subtotal}</div>
   </div>`;
