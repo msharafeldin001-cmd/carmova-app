@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 const state = {
-  riders: [{ id: 'r1', name: 'Demo Rider', email: 'rider@getrydio.com' }],
+  riders: [{ id: 'r1', name: 'Demo Rider', email: 'rider@carmova.uk' }],
   drivers: [
     { id: 'd1', name: 'Amir Khan', car: 'Toyota Prius', plate: 'RYD-101', online: true, earnings: 0 },
     { id: 'd2', name: 'Sarah Ali', car: 'Skoda Octavia', plate: 'RYD-202', online: false, earnings: 0 }
@@ -39,7 +39,7 @@ function calculateFare(distanceMiles, durationMinutes) {
 }
 
 app.get('/', (_, res) => {
-  res.json({ ok: true, app: 'Rydio API', commissionRate });
+  res.json({ ok: true, app: 'Carmova API', commissionRate });
 });
 
 app.get('/pricing/quote', (req, res) => {
@@ -98,5 +98,5 @@ app.post('/trips/:id/complete', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Rydio API running on http://localhost:${port}`);
+  console.log(`Carmova API running on http://localhost:${port}`);
 });
