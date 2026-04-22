@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rydio Rider</title>
+  <title>Carmova Rider</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #0b1020; color: #fff; }
     .wrap { max-width: 720px; margin: 0 auto; padding: 24px; }
@@ -18,11 +18,11 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>Rydio</h1>
-    <p class="muted">Tap. Ride. Go. Rider app for getrydio.com</p>
+    <h1>Carmova</h1>
+    <p class="muted">Tap. Ride. Go. Rider app for carmova.uk</p>
 
     <div class="card">
-      <div class="pill">Platform commission fixed at 10%</div>
+      <div class="pill">Platform commission: 10%</div>
       <h3>Book a ride</h3>
       <label>Pickup</label>
       <input id="pickup" value="Liverpool ONE" />
@@ -50,7 +50,7 @@
   </div>
 
 <script>
-const API = 'http://localhost:4000';
+const API = 'http://api.carmova.uk';
 let latestTrip = null;
 
 async function getQuote() {
