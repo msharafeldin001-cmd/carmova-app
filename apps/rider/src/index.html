@@ -58,7 +58,11 @@ async function getQuote() {
   const duration = document.getElementById('duration').value;
   const res = await fetch(`${API}/pricing/quote?distance=${distance}&duration=${duration}`);
   const data = await res.json();
-  document.getElementById('quoteBox').textContent = JSON.stringify(data, null, 2);
+  document.getElementById('quoteBox').textContent =
+  `Fare: £${data.subtotal}\n` +
+  `Driver earns: £${data.driverNet}\n` +
+  `Platform fee: £${data.platformFee}\n` +
+  `Commission: ${data.commissionRate * 100}%`; 
 }
 
 async function requestRide() {
