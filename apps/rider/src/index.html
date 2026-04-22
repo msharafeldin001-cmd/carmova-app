@@ -80,17 +80,29 @@ async function requestRide() {
   latestTrip = await res.json();
   document.getElementById('tripBox').innerHTML =
   `<div style="line-height:1.8;">
-    <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Ride requested</div>
-    <div style="display:inline-block;padding:6px 10px;border-radius:999px;background:#1d4ed8;font-size:12px;font-weight:700;margin-bottom:12px;">
-      ${latestTrip.status.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}
-    </div>
-    <div style="margin-bottom:6px;"><strong>From:</strong> ${latestTrip.pickup}</div>
-    <div style="margin-bottom:6px;"><strong>To:</strong> ${latestTrip.destination}</div>
-    <div style="margin-bottom:6px;"><strong>Driver:</strong> ${latestTrip.driverId || 'Searching...'}</div>
-    <div style="margin-bottom:6px;"><strong>Fare:</strong> £${latestTrip.quote.subtotal}</div>
-  </div>`;
-}
-
+  <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Ride requested</div>
+  <div style="display:inline-block;padding:6px 10px;border-radius:999px;background:#f59e0b;color:white;margin-bottom:12px;">
+    Searching for driver...
+  </div>
+  <div style="margin-bottom:6px;"><strong>From:</strong> ${latestTrip.pickup}</div>
+  <div style="margin-bottom:6px;"><strong>To:</strong> ${latestTrip.destination}</div>
+  <div style="margin-bottom:6px;"><strong>Driver:</strong> ${latestTrip.driverId || 'Searching...'}</div>
+  <div style="margin-bottom:6px;"><strong>Fare:</strong> £${latestTrip.quote.subtotal}</div>
+</div>`;
+setTimeout(() => {
+  document.getElementById('tripBox').innerHTML =
+    `<div style="line-height:1.8;">
+      <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Driver found</div>
+      <div style="display:inline-block;padding:6px 10px;border-radius:999px;background:#16a34a;color:white;margin-bottom:12px;">
+        Driver Assigned
+      </div>
+      <div style="margin-bottom:6px;"><strong>From:</strong> ${latestTrip.pickup}</div>
+      <div style="margin-bottom:6px;"><strong>To:</strong> ${latestTrip.destination}</div>
+      <div style="margin-bottom:6px;"><strong>Driver:</strong> ${latestTrip.driverId || 'D1'}</div>
+      <div style="margin-bottom:6px;"><strong>Fare:</strong> £${latestTrip.quote.subtotal}</div>
+      <div style="margin-top:10px;color:#93c5fd;">Your driver is on the way 🚗</div>
+    </div>`;
+}, 2000);
 document.getElementById('quoteBtn').onclick = getQuote;
 document.getElementById('bookBtn').onclick = requestRide;
 </script>
