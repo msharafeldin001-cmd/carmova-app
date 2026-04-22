@@ -79,13 +79,15 @@ async function requestRide() {
   });
   latestTrip = await res.json();
   document.getElementById('tripBox').innerHTML =
-  `<div style="line-height:1.7;">
-    <div style="font-size:18px;font-weight:700;">Ride requested</div>
-    <div>From: ${latestTrip.pickup}</div>
-    <div>To: ${latestTrip.destination}</div>
-    <div>Status: ${latestTrip.status.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}</div>
-    <div>Driver: ${latestTrip.driverId || 'Searching...'}</div>
-    <div>Fare: £${latestTrip.quote.subtotal}</div>
+  `<div style="line-height:1.8;">
+    <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Ride requested</div>
+    <div style="display:inline-block;padding:6px 10px;border-radius:999px;background:#1d4ed8;font-size:12px;font-weight:700;margin-bottom:12px;">
+      ${latestTrip.status.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}
+    </div>
+    <div style="margin-bottom:6px;"><strong>From:</strong> ${latestTrip.pickup}</div>
+    <div style="margin-bottom:6px;"><strong>To:</strong> ${latestTrip.destination}</div>
+    <div style="margin-bottom:6px;"><strong>Driver:</strong> ${latestTrip.driverId || 'Searching...'}</div>
+    <div style="margin-bottom:6px;"><strong>Fare:</strong> £${latestTrip.quote.subtotal}</div>
   </div>`;
 }
 
