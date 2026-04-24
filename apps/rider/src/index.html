@@ -712,7 +712,7 @@
     const API = 'https://api.carmova.uk';
     let latestTrip = null;
 
-    let map;
+    let map, driverMarker;
 
 function initMap() {
   map = L.map('rideMap').setView([53.4084, -2.9916], 12);
@@ -720,25 +720,58 @@ function initMap() {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
+  
+  const pickupCoords = [53.4046, -2.9919];
+  const dropoffCoords = [53.3336, -2.8497];
 
-  const pickup = L.marker([53.4046, -2.9919]).addTo(map).bindPopup('Pickup');
-  const dropoff = L.marker([53.3336, -2.8497]).addTo(map).bindPopup('Dropoff');
+  const pickup = L.marker(pickupCoords).addTo(map).bindPopup('Pickup');
+  const dropoff = L.marker(dropoffCoords).addTo(map).bindPopup('Dropoff');
 
-  const route = L.polyline([
-    [53.4046, -2.9919],
-    [53.3336, -2.8497]
-  ], {
+  const route = L.polyline([pickupCoords, dropoffCoords], {
     color: '#3b82f6',
     weight: 5
   }).addTo(map);
 
-  map.fitBounds(route.getBounds(), { padding: [30, 30] });
+  map.fitBounds(route.getBounds(), { padding: [50, 50] });
+
+  const driverStart = [53.42, -2.98];
+
+  driverMarker = L.marker(driverStart).addTo(map).bindPopup('Driver');
+
 }
 
 
-    function formatStatus(status) {
-      return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+function formatStatus(status) {
+  return status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+    
+function animateDriver(start, end) {
+  let lat = start[0];
+  let lng = start[1];
+
+  const steps = 100;
+  let step = 0;
+
+  const latStep = (end[0] - start[0]) / steps;
+  const lngStep = (end[1] - start[1]) / steps;
+
+  const interval = setInterval(() => {
+    if (step >= steps) {
+      clearInterval(interval);
+      return;
     }
+
+    lat += latStep;
+    lng += lngStep;
+
+    if (driverMarker) {
+      driverMarker.setLatLng([lat, lng]);
+    }
+
+    step++;
+  }, 80);
+}
+
 
     function getDriverProfile(driverId) {
       if (driverId === 'd1') {
@@ -760,7 +793,7 @@ function initMap() {
           <div class="fare-row"><span>Commission</span><strong>${data.commissionRate * 100}%</strong></div>
         </div>`;
     }
-
+animateDriver(driverStart, pickupCoords);
     function renderSearchingTrip(trip) {
       document.getElementById('tripBox').innerHTML =
         `<div>
