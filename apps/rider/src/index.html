@@ -736,9 +736,9 @@ function initMap() {
 
   const driverStart = [53.42, -2.98];
 
-  driverMarker = L.marker(driverStart).addTo(map).bindPopup('Driver');
-
-}
+ driverMarker = L.marker(driverStart).addTo(map).bindPopup('Driver');
+ animateDriver(driverStart, pickupCoords);
+ }
 
 
 function formatStatus(status) {
@@ -793,7 +793,6 @@ function animateDriver(start, end) {
           <div class="fare-row"><span>Commission</span><strong>${data.commissionRate * 100}%</strong></div>
         </div>`;
     }
-animateDriver(driverStart, pickupCoords);
     function renderSearchingTrip(trip) {
       document.getElementById('tripBox').innerHTML =
         `<div>
