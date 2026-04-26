@@ -87,7 +87,7 @@
   <div class="stripe-steps">
     <div class="stripe-step"><b>1</b><span>Paste your Stripe publishable key in the code: <strong>pk_test_...</strong></span></div>
     <div class="stripe-step"><b>2</b><span>Click <strong>Get Fare Estimate</strong>, then use card <strong>4242 4242 4242 4242</strong>.</span></div>
-    <div class="stripe-step"><b>3</b><span>This frontend securely creates a Stripe payment method. The next backend step will actually charge it.</span></div>
+    <div class="stripe-step"><b>3</b><span>This now creates a PaymentIntent on your backend and confirms the Stripe card payment.</span></div>
   </div>
 
   <div class="secure-row"><span>Encrypted payment details never touch CarMova.</span><span class="card-icons">VISA • MC • AMEX</span></div>
@@ -100,6 +100,7 @@
 <script>
 const API = 'https://api.carmova.uk';
 const STRIPE_PUBLISHABLE_KEY = 'pk_test_REPLACE_WITH_YOUR_PUBLISHABLE_KEY'; // <-- paste your Stripe publishable key here
+const PAYMENT_ENDPOINT = '/create-payment'; // local Express backend. For Vercel API use '/api/create-payment'
 let latestTrip = null, selectedRideType = { name:'Private', multiplier:1 }, latestQuote = null;
 let map, pickupMarker, dropoffMarker, driverMarker, driverLabelMarker, routeGlow, routeLine; let nearbyCars = []; let ridesCompleted = 6;
 const coords = { pickup:[53.4046,-2.9919], dropoff:[53.3336,-2.8497], driverStart:[53.4210,-2.9800], nearby:[[53.397,-2.965],[53.414,-2.944],[53.388,-2.918],[53.375,-2.988],[53.429,-2.905]] };
@@ -204,22 +205,53 @@ async function payAndRequestRide(){
     showToast('Stripe key needed','Paste your publishable key first.');
     return;
   }
+
   const btn = document.getElementById('payBtn');
-  setLoading(btn, true, 'Checking payment...');
-  setPaymentMessage('Creating secure Stripe payment method...');
-  const result = await stripe.createPaymentMethod({
-    type:'card',
-    card: stripeCard,
-    billing_details: { name:'CarMova Rider' }
-  });
-  if(result.error){
-    setPaymentMessage(result.error.message, 'error');
-    setLoading(btn, false, 'Pay & Request Ride');
-    return;
+  setLoading(btn, true, 'Processing payment...');
+  setPaymentMessage('Creating secure Stripe payment...');
+
+  try{
+    const amountPence = Math.round(Number(latestQuote.subtotal) * 100);
+
+    const res = await fetch(PAYMENT_ENDPOINT, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        amount: amountPence,
+        currency: 'gbp',
+        rideType: selectedRideType.name,
+        pickup: pickup.value,
+        destination: destination.value
+      })
+    });
+
+    const data = await res.json();
+
+    if(!res.ok || data.error){
+      throw new Error(data.error || 'Could not create payment.');
+    }
+
+    const result = await stripe.confirmCardPayment(data.clientSecret, {
+      payment_method: {
+        card: stripeCard,
+        billing_details: { name:'CarMova Rider' }
+      }
+    });
+
+    if(result.error){
+      setPaymentMessage(result.error.message, 'error');
+      setLoading(btn, false, 'Pay & Request Ride');
+      return;
+    }
+
+    setPaymentMessage('✅ Payment successful. Requesting your ride...', 'success');
+    showToast('Payment approved','Ride request is now being sent.');
+    await requestRide();
+  }catch(err){
+    setPaymentMessage(err.message, 'error');
+    showToast('Payment failed', err.message);
   }
-  setPaymentMessage('Payment method created successfully. Starting ride demo...', 'success');
-  showToast('Payment approved','Ride request is now being sent.');
-  await requestRide();
+
   setLoading(btn, false, 'Pay & Request Ride');
 }
 
