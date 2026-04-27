@@ -99,7 +99,7 @@
 
 <script>
 const API = 'https://api.carmova.uk';
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_REPLACE_WITH_YOUR_PUBLISHABLE_KEY'; // <-- paste your Stripe publishable key here
+const STRIPE_PUBLISHABLE_KEY = 'pk_live_51TQKCC35SmcU1SvreQgDHFsTnPlq8CYCL1ugI2TANTTmTo1a0I1NLrOosvErUjTpyylo0lOLSnzCUnzn8wGSOVtd00t64U4dmL'; // <-- paste your Stripe publishable key here
 const PAYMENT_ENDPOINT = '/create-payment'; // local Express backend. For Vercel API use '/api/create-payment'
 let latestTrip = null, selectedRideType = { name:'Private', multiplier:1 }, latestQuote = null;
 let map, pickupMarker, dropoffMarker, driverMarker, driverLabelMarker, routeGlow, routeLine; let nearbyCars = []; let ridesCompleted = 6;
